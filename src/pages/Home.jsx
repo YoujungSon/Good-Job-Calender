@@ -96,6 +96,7 @@ const HomeWrap = styled.div`
   height: 100%;
   padding: 0 35px;
   background-color: var(--blue1);
+  overflow: hidden;
   .mySwiper1 {
     margin-top: 34px;
     margin-bottom: 77px;
@@ -162,6 +163,7 @@ const Logo = styled.div`
       visibility: hidden;
     }
   }
+  z-index: 999;
 `;
 
 const EmailBtn = styled.button`

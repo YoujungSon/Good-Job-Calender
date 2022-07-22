@@ -1,12 +1,20 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import AddSchedule from "../componenets/AddSchedule";
-import Scheduler from "./../componenets/Scheduler";
 
+import { useNavigate } from "react-router-dom";
+
+// 컴포넌트
+import Nav from "../componenets/Nav";
+import WeekSchedule from "../componenets/WeekSchedule";
+import MonthSchedule from "./../componenets/month/MonthSchedule";
+import MonthList from "../componenets/MonthList";
+import DailyList from "../componenets/DailyList";
+
+// 이미지
 import zoomin from "../assets/img/icon/zoomin.png";
 import zoomout from "../assets/img/icon/zoomout.png";
-import Nav from "../componenets/Nav";
-import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 function Main() {
   const navigate = useNavigate();
   const [weekMonth, setWeekMonth] = useState(true);
@@ -15,9 +23,13 @@ function Main() {
     navigate("/addschedule");
   };
 
+  const navData = true;
+
+  const active = useSelector((state) => state.date.active);
+  console.log(active);
   return (
     <MainWrap>
-      <Nav />
+      <Nav navData={navData}/>
       <FixBox>
         <Search type="text" placeholder="일정 상세 검색" />
         <AddButtoon onClick={addClick}>+</AddButtoon>
@@ -51,7 +63,6 @@ function Main() {
             onClick={() => {
               setWeekMonth(!weekMonth);
             }}
-            weekMonth={weekMonth}
           >
             {weekMonth ? (
               <Circle weekMonth={weekMonth}>M</Circle>
@@ -60,20 +71,24 @@ function Main() {
             )}
           </WeekMonth>
         </ToggleBtn>
-        <Scheduler weekMonth={weekMonth} />
+        {weekMonth ? <MonthSchedule /> : <WeekSchedule />}
+        {active?.isActive ? <DailyList /> : <MonthList />}
       </ContentWrap>
     </MainWrap>
   );
 }
 export default Main;
-const MainWrap = styled.div``;
+const MainWrap = styled.div`
+  position: relative;
+`;
 const ContentWrap = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
   padding: 18px 12px;
   background-color: var(--blue1);
-  position: relative;
+  overflow: hidden;
+  height: calc(812px - 236px);
+  overflow-y: scroll;
 `;
 const ToggleBtn = styled.div`
   display: flex;
@@ -140,7 +155,11 @@ const AddButtoon = styled.button`
   height: 60px;
   background-color: var(--blue4);
   text-align: center;
-  font-size: 20px;
+  font-size: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 60px;
   color: #fff;
   border-radius: 100%;
   border: none;

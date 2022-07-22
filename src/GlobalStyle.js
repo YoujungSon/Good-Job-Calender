@@ -1,14 +1,15 @@
 import { createGlobalStyle } from "styled-components";
-
 const GlobalStyle = createGlobalStyle`
-@import url("https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.4/static/pretendard.css");
-* {
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+  * {
     margin: 0;
     padding: 0;
     list-style: none;
     text-decoration: none; 
-    font-family: Pretendard;
     color: var(--black);
+    
+    font-family: 'Pretendard';
+
 }
 :root{
   --gray1:#EFEFEF;
@@ -106,5 +107,4 @@ line-height: 40px;
     width: 100%;
 }
 `;
-
 export default GlobalStyle;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -14,10 +14,9 @@ import cover1 from "../assets/img/cover/cover1.jpg";
 import cover2 from "../assets/img/cover/cover2.jpg";
 import cover3 from "../assets/img/cover/cover3.jpg";
 import cover4 from "../assets/img/cover/cover4.jpg";
-import cover5 from "../assets/img/cover/cover5.jpg";
-import cover6 from "../assets/img/cover/cover6.jpg";
-import cover7 from "../assets/img/cover/cover7.jpg";
-import cover8 from "../assets/img/cover/cover8.jpg";
+import time from "../assets/img/icon/Time.png";
+import location from "../assets/img/icon/Location.png";
+import element from "../assets/img/icon/element-4.png";
 import { SchduleDB } from "../redux/modules/post";
 import "date-fns";
 import DatePicker from "react-datepicker";
@@ -25,7 +24,8 @@ import ko from "date-fns/locale/ko";
 import "react-datepicker/dist/react-datepicker.css";
 import TimePicker from "rc-time-picker";
 import "rc-time-picker/assets/index.css";
-import moment from "moment";
+import { monthList } from "../redux/modules/schedule";
+import dayjs from "dayjs";
 const AddSchedule = ({ value, onChange, ...others }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -41,16 +41,17 @@ const AddSchedule = ({ value, onChange, ...others }) => {
   const [title, setTitle] = useState("");
   const [place, setPlace] = useState("");
   const [memo, setMemo] = useState("");
-  const [cover, setCover] = useState("https://ifh.cc/g/rRCaTb.jpg");
+  const [cover, setCover] = useState(
+    "https://images.unsplash.com/photo-1500989145603-8e7ef71d639e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1176&q=80"
+  );
+  const [colorPick, setColorPick] = useState("");
 
   const [startDate, setStartDate] = useState(new Date());
-  console.log(startDate);
-  const [dispatchTime, setDispatchTime] = useState(moment());
+  const [dispatchTime, setDispatchTime] = useState(dayjs());
 
-  const now = moment().hour(0).minute(0);
+  const now = dayjs().hour(0).minute(0);
   const handleValueChange = (value) => {
     setDispatchTime(value);
-    console.log("value" + value);
   };
   const addClick = () => {
     navigate("/main");
@@ -67,6 +68,7 @@ const AddSchedule = ({ value, onChange, ...others }) => {
 
   const colorChange = (e) => {
     setColor(e.target.id);
+    setColorPick(e.target.value);
     setColorPickerShow(!colorPickerShow);
   };
   const stickerChange = (e) => {
@@ -76,37 +78,47 @@ const AddSchedule = ({ value, onChange, ...others }) => {
   const coverChange = (e) => {
     setCover(e.target.value);
     setImage(e.target.id);
-    console.log(e.target);
     setCoverShow(!coverShow);
   };
   let [week, month, day, year, sTime] = startDate.toString().split(" ");
+  let Week = (week) => {
+    if (week === "Sun") return "01";
+    if (week === "Mon") return "02";
+    if (week === "Tue") return "03";
+    if (week === "Wed") return "04";
+    if (week === "Thu") return "05";
+    if (week === "Fri") return "06";
+    if (week === "Sat") return "07";
+  };
   let Month = (month) => {
-    if (month === "Jan") return "1";
-    if (month === "Feb") return "2";
-    if (month === "Mar") return "3";
-    if (month === "Apr") return "4";
-    if (month === "May") return "5";
-    if (month === "Jun") return "6";
-    if (month === "Jul") return "7";
-    if (month === "Aug") return "8";
-    if (month === "Sep") return "9";
+    if (month === "Jan") return "01";
+    if (month === "Feb") return "02";
+    if (month === "Mar") return "03";
+    if (month === "Apr") return "04";
+    if (month === "May") return "05";
+    if (month === "Jun") return "06";
+    if (month === "Jul") return "07";
+    if (month === "Aug") return "08";
+    if (month === "Sep") return "09";
     if (month === "Oct") return "10";
     if (month === "Nov") return "11";
     if (month === "Dec") return "12";
   };
   let [hour, minute, second] = dispatchTime.toString().split(" ")[4].split(":");
 
-  const allDate = `${year}-${Month(month)}-${day} ${hour}:${minute}`;
+  const allDate = `${year}-${Month(month)}-${day} ${hour}:${minute}:00`;
+
   const addScheduleBtn = async () => {
     dispatch(
       SchduleDB({
         image: Number(image),
-        companyName,
-        title,
-        sticker,
-        date: allDate,
-        place,
+        companyName, //필수입력
+        title, //필수입력
+        sticker: Number(sticker),
+        date: allDate, //필수입력
+        place, //필수입력
         memo,
+        color: Number(color),
       })
     );
     navigate("/main");
@@ -210,80 +222,48 @@ const AddSchedule = ({ value, onChange, ...others }) => {
                     type="radio"
                     name="cover"
                     id="1"
-                    value="https://ifh.cc/g/rRCaTb.jpg"
+                    value="cover1"
                     onChange={coverChange}
                   />
-                  <CoverImg src={cover1} />
+                  <CoverImg>
+                    <img src={cover1} />
+                  </CoverImg>
                 </label>
                 <label htmlFor="2">
                   <Input
                     type="radio"
                     name="cover"
                     id="2"
-                    value="https://ifh.cc/g/46sJrK.jpg"
+                    value="cover2"
                     onChange={coverChange}
                   />
-                  <CoverImg src={cover2} />
+                  <CoverImg>
+                    <img src={cover2} />
+                  </CoverImg>
                 </label>
                 <label htmlFor="3">
                   <Input
                     type="radio"
                     name="cover"
                     id="3"
-                    value="https://ifh.cc/g/nxGmlc.jpg"
+                    value="cover3"
                     onChange={coverChange}
                   />
-                  <CoverImg src={cover3} />
+                  <CoverImg>
+                    <img src={cover3} />
+                  </CoverImg>
                 </label>
                 <label htmlFor="4">
                   <Input
                     type="radio"
                     name="cover"
                     id="4"
-                    value="https://ifh.cc/g/pYVt1o.jpg"
+                    value="cover4"
                     onChange={coverChange}
                   />
-                  <CoverImg src={cover4} />
-                </label>
-                <label htmlFor="5">
-                  <Input
-                    type="radio"
-                    name="cover"
-                    id="5"
-                    value="https://ifh.cc/g/o2h5z4.jpg"
-                    onChange={coverChange}
-                  />
-                  <CoverImg src={cover5} />
-                </label>
-                <label htmlFor="6">
-                  <Input
-                    type="radio"
-                    name="cover"
-                    id="6"
-                    value="https://ifh.cc/g/z3jLkW.jpg"
-                    onChange={coverChange}
-                  />
-                  <CoverImg src={cover6} />
-                </label>
-                <label htmlFor="7">
-                  <Input
-                    type="radio"
-                    name="cover"
-                    id="7"
-                    value="https://ifh.cc/g/PJ5SXW.jpg"
-                    onChange={coverChange}
-                  />
-                  <CoverImg src={cover7} />
-                </label>
-                <label htmlFor="8">
-                  <Input
-                    type="radio"
-                    name="cover"
-                    id="8"
-                    value="https://ifh.cc/g/V1yarv.jpg"
-                    onChange={coverChange}
-                  />
-                  <CoverImg src={cover8} />
+                  <CoverImg>
+                    <img src={cover4} />
+                  </CoverImg>
                 </label>
               </List>
             ) : (
@@ -308,68 +288,75 @@ const AddSchedule = ({ value, onChange, ...others }) => {
               setTitle(event.target.value);
             }}
           />
-          <ColorPicker onClick={ColorClick} color={color} />
+          <ColorPicker onClick={ColorClick} colorPick={colorPick} />
           {colorPickerShow ? (
-            <List>
-              <Color1 htmlFor="#fff"></Color1>
+            <ColorList>
+              <Color1 htmlFor="1"></Color1>
               <Input
                 type="radio"
                 name="color"
-                id="#fff"
-                onChange={colorChange}
-                checked
-              />
-              <Color2 htmlFor="var(--point3)"></Color2>
-              <Input
-                type="radio"
-                name="color"
-                id="var(--point3)"
+                id="1"
+                value="#fff"
                 onChange={colorChange}
               />
-              <Color3 htmlFor="rgba(253, 187, 110, 1)"></Color3>
+              <Color2 htmlFor="2"></Color2>
               <Input
                 type="radio"
                 name="color"
-                id="rgba(253, 187, 110, 1)"
+                id="2"
+                value="var(--point3)"
                 onChange={colorChange}
               />
-              <Color4 htmlFor="rgba(253, 247, 110, 1)"></Color4>
+              <Color3 htmlFor="3"></Color3>
               <Input
                 type="radio"
                 name="color"
-                id="rgba(253, 247, 110, 1)"
+                id="3"
+                value="rgba(253, 187, 110, 1)"
+                onChange={colorChange}
+              />
+              <Color4 htmlFor="4"></Color4>
+              <Input
+                type="radio"
+                name="color"
+                id="4"
+                value="rgba(253, 247, 110, 1)"
                 onChange={colorChange}
               />
 
-              <Color5 htmlFor="rgba(110, 253, 150, 1)"></Color5>
+              <Color5 htmlFor="5"></Color5>
               <Input
                 type="radio"
                 name="color"
-                id="rgba(110, 253, 150, 1)"
+                id="5"
+                value="rgba(253, 247, 110, 1)"
                 onChange={colorChange}
               />
-              <Color6 htmlFor="rgba(110, 218, 253, 1)"></Color6>
+              <Color6 htmlFor="6"></Color6>
               <Input
                 type="radio"
                 name="color"
-                id="rgba(110, 218, 253, 1)"
+                id="6"
+                value="rgba(253, 247, 110, 1)"
                 onChange={colorChange}
               />
-              <Color7 htmlFor="rgba(130, 110, 253, 1)"></Color7>
+              <Color7 htmlFor="7"></Color7>
               <Input
                 type="radio"
                 name="color"
-                id="rgba(130, 110, 253, 1)"
+                id="7"
+                value="rgba(253, 247, 110, 1)"
                 onChange={colorChange}
               />
-              <Color8 htmlFor="rgba(154, 154, 154, 1)"></Color8>
+              <Color8 htmlFor="8"></Color8>
               <Input
                 type="radio"
                 name="color"
-                id="rgba(154, 154, 154, 1)"
+                id="8"
+                value="rgba(154, 154, 154, 1)"
                 onChange={colorChange}
               />
-            </List>
+            </ColorList>
           ) : (
             ""
           )}
@@ -409,8 +396,7 @@ const AddSchedule = ({ value, onChange, ...others }) => {
             setPlace(event.target.value);
           }}
         />
-        <InputText
-          type="text"
+        <TextArea
           placeholder="메모"
           onChange={(event) => {
             setMemo(event.target.value);
@@ -450,8 +436,11 @@ const AddSchesuleWrap = styled.div`
 const Btn = styled.button`
   font-weight: 700;
   font-size: 12px;
-  color: var(--gray4);
-  background-color: transparent;
+  color: #fff;
+  background-color: var(--blue4);
+  border: 1px solid #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
 `;
 const AddBtn = styled.button`
   font-weight: 700;
@@ -521,13 +510,27 @@ const InputText = styled.input`
   width: 90%;
   padding: 10px;
 `;
+const TextArea = styled.textarea`
+  width: 90%;
+  padding: 18px;
+  border: 0;
+  ::placeholder {
+    color: var(--blue3);
+    font-weight: 500;
+    font-size: 16px;
+  }
+  :focus {
+    outline: none;
+  }
+`;
 const TitleInput = styled.label`
   position: relative;
 `;
 const ColorPicker = styled.button`
   width: 24px;
   height: 24px;
-  background-color: ${(props) => (props.color ? props.color : "var(--gray2)")};
+  background-color: ${(props) =>
+    props.colorPick ? props.colorPick : "var(--gray2)"};
   border-radius: 100%;
   border: 5px solid var(--gray1);
   position: absolute;
@@ -547,11 +550,25 @@ const List = styled.div`
   border-radius: 15px;
   padding: 8px 12px;
   width: 185px;
+  z-index: 99;
+`;
 
-  z-index: 99999;
-
-  label {
-  }
+const ColorList = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 59px;
+  padding: 16px;
+  width: 100%;
+  border-radius: 6px;
+  background: var(--blue1);
+  box-shadow: 0px 14px 24px -4px rgba(117, 146, 189, 0.32),
+    inset 0px 8px 14px rgba(255, 255, 255, 0.3);
+  z-index: 99;
 `;
 const Input = styled.input`
   display: none;
@@ -624,9 +641,14 @@ const StickerImg = styled.img`
   width: 50px;
   height: 50px;
 `;
-const CoverImg = styled.img`
-  width: 100px;
+const CoverImg = styled.div`
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
   border-radius: 10px;
+  img {
+    height: 100%;
+  }
 `;
 const DateWrap = styled.div`
   .react-datepicker-wrapper {

@@ -17,8 +17,8 @@ root.render(
   <BrowserRouter>
     <ThemeProvider theme={Theme}>
       <Provider store={store}>
+        <GlobalStyle />
         <BrowserView>
-          <GlobalStyle />
           <App />
         </BrowserView>
         <MobileView>

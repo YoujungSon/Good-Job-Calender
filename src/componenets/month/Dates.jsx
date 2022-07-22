@@ -1,25 +1,37 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import { active, daily, schedule } from "../../redux/modules/date";
+import { dailyList } from "../../redux/modules/schedule";
 
 const Dates = (props) => {
-  const { lastDate, firstDate, elm, findToday, month, year, idx, holiday } =
-    props;
-
-  const [userInput, setUserInput] = useState({});
-  const [evtList, setEvtList] = useState([]);
+  const { lastDate, firstDate, elm, findToday, month, year, idx } = props;
+  const dispatch = useDispatch();
   const [isActive, setIsActive] = useState(false);
+  let dateKey = `${year}-${String(month).padStart(2, "0")}-${String(
+    elm
+  ).padStart(2, "0")}`;
+  const [mmm, setmmm] = useState();
+  const monthSchdule = useSelector((state) => state.schedule.month);
 
-  let dateKey = `${month}` + `${elm}`;
-  const registEvent = (value) => {
-    setEvtList([...evtList, value]);
-    setUserInput("");
-  };
+  useEffect(() => {
+    if (monthSchdule) {
+      const monthlist = [...monthSchdule?.manual, ...monthSchdule?.auto];
+      monthlist.sort(function (a, b) {
+        return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+      });
+      setmmm(monthlist);
+    }
+  }, [monthSchdule]);
+  useEffect(() => {
+    dispatch(active(isActive));
+  }, [isActive]);
   return (
     <>
       <Form
         elm={elm}
         onClick={() => {
-          console.log(year + "년" + month + "월" + elm + "일");
+          dispatch(dailyList(dateKey));
         }}
       >
         <DateNum
@@ -41,19 +53,16 @@ const Dates = (props) => {
             {String(elm).padStart(2, "0")}
           </CheckDay>
         </DateNum>
-        {Boolean(evtList[0]) && (
-          <Lists>
-            {evtList.map((list, index) => {
+        <Lists>
+          {mmm &&
+            mmm.map((list, index) => {
               return (
-                list.slice(0, list.indexOf("_")) === dateKey && (
-                  <List key={index}>
-                    {list.slice(list.indexOf("_") + 1, list.length)}
-                  </List>
+                list.date.split(" ")[0] === dateKey && (
+                  <List key={index} color={list.color}></List>
                 )
               );
             })}
-          </Lists>
-        )}
+        </Lists>
       </Form>
     </>
   );
@@ -62,6 +71,7 @@ const Form = styled.li`
   width: calc(100% / 7);
   padding: 13px 19px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
@@ -88,7 +98,6 @@ const TodayCSS = styled.input`
 
 const CheckDay = styled.label`
   z-index: 1;
-
   border: ${(props) => props.findToday && "2px solid var(--blue4)"};
   font-weight: 500;
   font-size: 12px;
@@ -99,9 +108,25 @@ const CheckDay = styled.label`
 `;
 const Lists = styled.div`
   display: flex;
-  flex-direction: column;
-  text-align: left;
+  gap: 2px;
 `;
-const List = styled.span``;
+const List = styled.span`
+  width: 5px;
+  height: 5px;
+  border-radius: 100%;
+  background-color: ${(props) => (props.color === 1 ? "#fff" : "")};
+  background-color: ${(props) => (props.color === 2 ? "var(--point3)" : "")};
+  background-color: ${(props) =>
+    props.color === 3 ? "rgba(253, 187, 110, 1)" : ""};
+  background-color: ${(props) =>
+    props.color === 4 ? "rgba(253, 247, 110, 1)" : ""};
+  background-color: ${(props) =>
+    props.color === 5 ? "rgba(110, 253, 150, 1)" : ""};
+  background-color: ${(props) =>
+    props.color === 6 ? "rgba(110, 218, 253, 1)" : ""};
+  background-color: ${(props) =>
+    props.color === 7 ? "rgba(130, 110, 253, 1)" : ""};
+  background-color: ${(props) => (props.color === 8 ? "var(--gray2)" : "")};
+`;
 
 export default Dates;

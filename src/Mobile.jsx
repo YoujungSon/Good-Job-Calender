@@ -11,13 +11,11 @@ import KakaoOauth from "./shared/KakaoOauth";
 import SignupSucess from "./pages/SignUpSuccess";
 import PwChangeSuccess from "./pages/PwChangeSuccess";
 import PwChange from "./pages/PwChange";
-import Month from "./componenets/month/Month";
-
-// import AddSchedule from "./componenets/AddSchedule";
 import Job from "./pages/Job";
 import JobDetail from "./pages/JobDetail";
 import JobCategory from "./pages/JobCategory";
 import AddSchedule from "./componenets/AddSchedule";
+import PostDetail from "./pages/PostDetail";
 
 function Mobile() {
   return (
@@ -30,16 +28,16 @@ function Mobile() {
         <Route path="/emailsend" element={<EmailSend />} />
         <Route path="/pwsend" element={<PwSend />} />
         <Route path="/pwcheck" element={<PwCheck />} />
-        <Route path="/main" element={<Main />} />
         <Route path="/pwsend" element={<PwSend />} />
         <Route path="/signupsuccess" element={<SignupSucess />} />
         <Route path="/pwchangesuccess" element={<PwChangeSuccess />} />
         <Route path="/pwchange" element={<PwChange />} />
+        <Route path="/main" element={<Main />} />
         <Route path="/job" element={<Job />} />
-        <Route path="/jobDetail" element={<JobDetail />} />
+        <Route path="/jobDetail/:id" element={<JobDetail />} />
         <Route path="/jobCategory" element={<JobCategory />} />
-        <Route path="/month" element={<Month />} />
         <Route path="/addschedule" element={<AddSchedule />} />
+        <Route path="/postdetail/:scheduleId" element={<PostDetail />} />
       </Routes>
     </MobileWrap>
   );

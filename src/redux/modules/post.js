@@ -15,7 +15,7 @@ const initialState = {
 };
 
 // action
-const SCHEDULE_POST = "user_reducer/SCHEDULE_POST";
+const SCHEDULE_POST = "post_reducer/SCHEDULE_POST";
 
 // action creator
 export function schedulePost(payload) {
@@ -23,25 +23,23 @@ export function schedulePost(payload) {
 }
 
 //middleware
+
+//개인일정 작성
 export const SchduleDB = (payload) => {
   console.log(payload);
-  return function (dispatch) {
-    const token = getCookie("token");
-
-    const config = {
-      headers: {
-        Authorization: token,
-      },
-    };
-    axios
-      .post("http://14.34.139.253:3000/api/schedule", payload, config)
-      .then((response) => {
-        console.log(response);
-        dispatch(schedulePost(payload));
+  return function (dispatch, getState) {
+    const myToken = getCookie("token");
+    axios({
+      method: "post",
+      url: "http://14.34.139.253:3000/api/schedule",
+      data: payload,
+      headers: { Authorization: `Bearer ${myToken}` },
+    })
+      .then((res) => {
+        dispatch(schedulePost(res.payload));
       })
-      .catch((error) => {
-        console.error(error);
-        window.alert("등록 못함 으이그");
+      .catch((err) => {
+        console.log("카테고리 선택 에러 : ", err);
       });
   };
 };

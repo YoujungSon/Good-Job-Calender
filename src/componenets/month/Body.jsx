@@ -6,10 +6,12 @@ const Body = (props) => {
   const { totalDate, today, month, year } = props;
   const lastDate = totalDate.indexOf(1);
   const firstDate = totalDate.indexOf(1, 7);
-
+  console.log(lastDate);
   //today
   const findToday = totalDate.indexOf(today);
   const getMonth = new Date().getMonth() + 1;
+  console.log(findToday);
+
   return (
     <Form>
       {totalDate.map((elm, idx) => {
